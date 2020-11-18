@@ -1,28 +1,20 @@
 from scipy.fftpack import dct, idct
 from skimage.io import imread
 from skimage.color import rgb2gray
+import cv2
 import numpy as np
 import matplotlib.pylab as plt
 
-# implement 2D DCT
-def dct2(a):
-    return dct(dct(a.T, norm='ortho').T, norm='ortho')
+imag = rgb2gray(imread("Lenna.png"))    # Charge the image in grayscale.
 
-# implement 2D IDCT
-def idct2(a):
-    return idct(idct(a.T, norm='ortho').T, norm='ortho')    
-
-# read lena RGB image and convert to grayscale
-im = rgb2gray(imread('images/lena.jpg')) 
-imF = dct2(im)
-im1 = idct2(imF)
+imF = cv2.dct((imag))                   # Use the DCT function from CV2, and the inverse to get the  reconstruction.
+im1 = cv2.idct(imF)
 
 # check if the reconstructed image is nearly equal to the original image
-np.allclose(im, im1)
-# True
+np.allclose(imag, im1)
 
-# plot original and reconstructed images with matplotlib.pylab
 plt.gray()
-plt.subplot(121), plt.imshow(im), plt.axis('off'), plt.title('original image', size=20)
-plt.subplot(122), plt.imshow(im1), plt.axis('off'), plt.title('reconstructed image (DCT+IDCT)', size=20)
+# plot original and reconstructed images with matplotlib.pylab
+plt.subplot(121), plt.imshow(imag), plt.axis('off'), plt.title('original', size = 10)
+plt.subplot(122), plt.imshow(im1), plt.axis('off'), plt.title('reconstructed (DCT+IDCT)', size = 10)
 plt.show()
